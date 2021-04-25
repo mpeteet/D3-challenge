@@ -1,108 +1,70 @@
-// @TODO: YOUR CODE HERE!
-var svgWidth = 1000;
-var svgHeight = 550;
+// Set the dimensions of the SVB
+var svgWidth = 960;
+var svgHeight = 500;
 
+// Set the variables for margin, width and height
 var margin = {
   top: 20,
   right: 40,
-  bottom: 80,
+  bottom: 100,
   left: 100
 };
 
-var svgWidth = 1000;
-var svgHeight = 550;
+// Calcuate the height and width of the chart
+var width = svgWidth - margin.left - margin.right;
+var height = svgHeight - margin.top - margin.bottom;
 
-// Create SVG wrapper 
-var svg = d3.select("#scatter")
-    .append("svg")
+// Append a class div chart to the scatter element
+var chart = d3.select("#scatter").append("div").attr("class", "tooltip").style("opacity, 0");
+// var chart = d3.select("#scatter").append("div").classed("chart", true);
+
+
+// Create SVG wrapper, append an SVG group that will hold the chart, and shift it by the left and top margins.
+var svg = chart.append("svg")
     .attr("width", svgWidth)
     .attr("height", svgHeight);
 
-// Appended a SVG group
 var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-// Initiated the Parameter
-var chosenXAxis = "poverty";
 
-// function used for updating the x-scale var upon click on axis label
-function xScale(stateData, chosenXAxis) {
-  // created scales
-  var xLinearScale = d3.scaleLinear()
-    .domain([d3.min(stateData, d => d[chosenXAxis])-1, d3.max(stateData, d => d[chosenXAxis])])
-    .range([0, width]);
 
-  return xLinearScale;
+// Setup the initial chart parameters
+var chosenX= "poverty";
+var chosenY = "healthcare";
 
-}
+// Import the Data
+// d3.csv("../data/data.csv").then(function(data) {
 
-// function used for updating the xAxis var upon click on axis label
-function renderAxes(newXScale, xAxis) {
-  var bottomAxis = d3.axisBottom(newXScale);
+  // Parse the CSV data so that it is cast as numbers
+  //=======================================
 
-  xAxis.transition()
-    .duration(1000)
-    .call(bottomAxis);
-
-  return xAxis;
-}
-
-// function used for updating the circles group with a transition to the new circles
-function renderCircles(circlesGroup, newXScale, chosenXAxis) {
-
-  circlesGroup.transition()
-    .duration(1000)
-    .attr("cx", d => newXScale(d[chosenXAxis]));
-
-  return circlesGroup;
-}
-
-// function used for updating the circles group with new tooltip
-function updateToolTip(chosenXAxis, circlesGroup) {
-
-  var label;
-
-  if (chosenXAxis === "poverty") {
-    label = "Percent in poverty:";
-  }
-  else {
-    label = "Age:";
-  }
-
-  return circlesGroup;
-}
-
-// Retrieved data from the CSV file 
-(async function(){
-  var url = "https://media.githubusercontent.com/media/the-Coding-Boot-Camp-at-UT/UT-MCC-DATA-PT-01-2020-U-C/master/homework-instructions/16-D3/Instructions/StarterCode/assets/data/data.csv?token=AH6CPXAXX5556PB2XXK5JY26Z4CAG";
-  // var url = "/data/data.csv";
-  var csvData = await d3.csv(url).catch(function(error) {
-    console.log(error);
+  censusData.forEach(function(data) {
+    data.poverty = +data.poverry;
+    data.healthcare = +data.healthcare;
   });
 
-  console.log(csvData);
+  // Create the scale functions
+  // var xLinearScale = d3.scaleLinear().domain([d3.min(censusData, d => d.poverty)]).range([0, width]);
+  // var yLinearScale = d3.scaleLinear().domain([d3.min(censusData, d => d.healthcare)].range([height, 0]));
 
-  // parsed data. Converted the CSV data
-  csvData.forEach(function(data) {
-    data.id = +data.id;
-    data.poverty = +data.poverty;
-    data.povertyMoe = +data.povertyMoe;
-    data.id = +data.id;
-    data.age = +data.age;
-    data.ageMoe = +data.ageMoe;
-    data.income = +data.income;
-    data.incomeMoe = +data.incomeMoe;
-    data.healthcare = +data.healthcare;
-    data.healthcareLow = +data.healthcareLow;
-    data.healthcareHigh = +data.healthcareHigh;
-    data.obesity = +data.obesity;
-    data.obesityLow = +data.obesityLow;
-    data.obesityHigh = +data.obesityHigh;
-    data.smokes = +data.smokes;
-    data.smokesLow = +data.smokesLow;
-    data.smokesHigh = +data.smokesHigh;
-  })
 
-  var stateData = csvData;
+// Create the scale functions
+//===========================================
+  var xLinearScale = d3.scaleLinear().range([0, width]);
+  var yLinearScale = d3.scaleLinear().range([height, 0]);
+  
+}
 
-  console.log(stateData);
+// Create the axis functions
+//===========================================
+var bottomAxis = d3.axisBottom(xLinearScale);
+var leftAxis = d3.axisLeft(yLinearScale);
+
+var xMin;
+var xMax;
+var yMin;
+var yMax;
+
+// Append the axes to the chart
+
