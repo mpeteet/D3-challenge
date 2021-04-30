@@ -1,4 +1,4 @@
-// Set the dimensions of the SVB
+// Set the dimensions of the SVG
 var svgWidth = 960;
 var svgHeight = 500;
 
@@ -30,8 +30,8 @@ var chosenY = "healthcare";
 // The function to update the X-Scale variable if the axis label is clicked
 function xScale(data, chosenX) {
   var xLinearScale = d3.scaleLinear()
-    .domain([d3.min(data, d => d[chosenX]) *0.9,
-      d3.max(data, d => d[chosenX]) * 1.1
+    .domain([d3.min(data, d => d[chosenX] *0.9),
+      d3.max(data, d => d[chosenX] * 1.1)
     ])
     .range([0, width]);
   return xLinearScale;
@@ -40,8 +40,8 @@ function xScale(data, chosenX) {
 //The function used to update the Y-Scale variable if the axis label is clicked
 function yScale(data, chosenY) {
   var yLinearScale = d3.scaleLinear()
-    .domain([d3.min(data, d => d[chosenY])-2, 
-      d3.max(data, d => d[chosenY])+2])
+    .domain([d3.min(data, d => d[chosenY]-2), 
+      d3.max(data, d => d[chosenY]+2)])
       .range([height, 0]);
   return yLinearScale;
 
@@ -95,7 +95,7 @@ function renderYtxt(circlesGroup, changedYScale, chosenY) {
   return circlesGroup;
 }
 // The function to update the circles groups' tooltips
-function changeToolTip(chosenX, chosenY, circlesGroup) {
+function changeToolTip(circlesGroup, chosenX, chosenY) {
 
     var xlabel;
     var ylabel;
@@ -133,7 +133,8 @@ function changeToolTip(chosenX, chosenY, circlesGroup) {
         return (`${d.state}<br>${xlabel} ${d[chosenX]}%<br>${ylabel} ${d[chosenY]}%`);
       });
 
-    circlesGroup.call(toolTip);
+    // circlesGroup.call(toolTip);
+    chartGroup.call(toolTip);
 
     circlesGroup.on("mouseover", function(data) {
       toolTip.show(data, this);
@@ -147,7 +148,7 @@ function changeToolTip(chosenX, chosenY, circlesGroup) {
 
 // Import the CSV and then parse it so that the data is cast as numbers
 d3.csv("assets/data/data.csv").then(function(data, err) {
-    //console.log(data)
+    console.log(data)
     if (err) throw err;
 
     data.forEach(d => {
@@ -176,7 +177,7 @@ d3.csv("assets/data/data.csv").then(function(data, err) {
     var circlesGroup = chartGroup.selectAll("circle")
       .data(data)
       .enter()
-      .append("g");
+      // .append("g");
 
     var circles = circlesGroup.append("circle")
       .attr("cx", d => xLinearScale(d[chosenX]))
