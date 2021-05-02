@@ -18,7 +18,8 @@ var height = svgHeight - margin.top - margin.bottom;
 var svg = d3.select("#scatter")
   .append("svg")
   .attr("width", svgWidth)
-  .attr("height", svgHeight);
+  .attr("height", svgHeight)
+  .attr("class", "chart");
 
   var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
@@ -34,7 +35,7 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
 
        // Create the scale and axes functions
        var xLinearScale = d3.scaleLinear()
-       .domain([20, d3.min(censusData, d => d.poverty)])
+       .domain([22, d3.max(censusData, d => d.poverty) *.20 ])
        .range([0, width]);
 
        var yLinearScale = d3.scaleLinear()
@@ -64,18 +65,47 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
          .attr("fill", "steelblue")
          .attr("opacity", ".5");
 
-         // Set tool tips
+        // Append text inside the circles
+        var circlesText = chartGroup.selectAll(null)
+          .data(censusData)
+          .enter()
+          .append("text");
+
+        circlesText
+        .attr("x", function(d){
+          return xLinearScale(d.poverty);
+        })
+        .attr("y",function(d){
+          return yLinearScale(d.healthcare);
+        })
+        .text(function(d){
+          return d.abbr;
+        })
+        .attr("text-anchor", "middle")
+        .attr("font-size", "10px")
+        .attr("font-family", "verdana")
+        .attr("font-weight", "bold");
+
+        // Set tool tips
          var toolTip = d3.tip()
           .attr("class", "tooltip")
           .offset([80, -60])
+          .style("color", "black")
+          .style("background", "white")
+          .style("border", "solid")
+          .style("border-width", "1px")
+          .style("border-radius", "5px")
+          .style("padding", "5px")
           .html(function(d) {
-            return (`${d.state}<br> In poverty: ${d.poverty}<br>Lacks healthcare: ${d.healthcare}`);
+            return (`<strong>${d.state}</strong>
+            <br>In poverty: ${d.poverty}
+            <br>Lacks healthcare: ${d.healthcare}`);
           });
 
          chartGroup.call(toolTip);
        
 
-        circlesGroup.on("click", function(data) {
+        circlesGroup.on("mouseover", function(data) {
           toolTip.show(data, this);
         })
           .on("mouseout", function(data, index) {
@@ -92,7 +122,7 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
         .text("Lacks Healthcare (%)");
 
         chartGroup.append("text")
-        .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
+        .attr("transform", `translate(${width / 2}, ${height + margin.top + 20})`)
         .attr("class", "axisText")
         .text("In Poverty (%)");
 

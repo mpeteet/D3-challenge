@@ -11,8 +11,8 @@ var margin = {
 };
 
 // Calcuate the height and width of the chart
-var width = svgWidth - margin.left - margin.right + 20;
-var height = svgHeight - margin.top - margin.bottom - 20;
+var width = svgWidth - margin.left - margin.right;
+var height = svgHeight - margin.top - margin.bottom;
 
 // Create SVG wrapper, append an SVG group that will hold the chart, and shift it by the left and top margins.
 var svg = d3.select("#scatter")
@@ -71,7 +71,7 @@ function renderXCircles(circlesGroup, changedXScale, chosenX) {
   circlesGroup.transition()
     .duration(1000)
     .attr("cx", d => changedXScale(d[chosenX]));
-    // .attr("dx", d => changedXScale(d[chosenX]));
+
   return circlesGroup;
 }
 
@@ -80,69 +80,64 @@ function renderYCircles(circlesGroup, changedYScale, chosenY) {
   circlesGroup.transition()
     .duration(1000)
     .attr("cy", d => changedYScale(d[chosenY]));
-    // .attr("dy", d => changedYScale(d[chosenY])+5)
+  
   return circlesGroup;
 }
 
 /// Update the text for X and for Y
 function renderXtxt(circlesText, changedXScale, chosenX) {
   circlesText.transition()
-  // circlesGroup.transition()
-    .duration(1000)
-    // .attr("dx", d => changedXScale(d[chosenX]));
-    .attr("x", d => changedXScale(d[chosenX]));
-    return circlesText;
-    // return circlesGroup;
+     .duration(1000)
+     .attr("x", d => changedXScale(d[chosenX]));
+  return circlesText;
+    
 }
+
 function renderYtxt(circlesText, changedYScale, chosenY) {
   circlesText.transition()
-  // circlesGroup.transition()
     .duration(1000)
-    // .attr("dy", d => changedYScale(d[chosenY])+4)
     .attr("y", d => changedYScale(d[chosenY])+4);
-    return circlesText;
-    // return circlesGroup;
+  return circlesText;
 }
+
 // The function to update the circles groups' tooltips
 function changeToolTip(chosenX, chosenY, circlesGroup, ) {
 
-    var xlabel;
-    var ylabel;
+  var xlabel;
+  var ylabel;
 
-    if (chosenX === "poverty") {
-      xlabel = "Poverty:"
-    }
-    else if (chosenX === "age") {
-      xlabel = "Age:"
-    }
-    else {
-    // else if (chosenX === "income") {
-      xlabel = "Household Income:";
+  if (chosenX === "poverty") {
+    xlabel = "Poverty:"
+  }
+  else if (chosenX === "age") {
+    xlabel = "Age:"
+  }
+  else {
+    xlabel = "Household Income:";
     }
     
 
-    if (chosenY === "healthcare") {
-      ylabel = "Health:"
-    }
-    else if (chosenY === "smokes") {
-      ylabel = "Smokes:"
-    }
-    else  {
-    // else if (chosenY === "obesity") {
-      ylabel = "Obesity:";
-    }
+  if (chosenY === "healthcare") {
+    ylabel = "Health:"
+  }
+  else if (chosenY === "smokes") {
+    ylabel = "Smokes:"
+  }
+  else  {
+    ylabel = "Obesity:";
+  }
   
-    var toolTip = d3.tip()
-      .attr("class", "tooltip")
-      .offset([40, 60])
-      // .style("color", "black")
-      // .style("background", "white")
-      // .style("border", "solid")
-      // .style("border-width", "1px")
-      // .style("border-radius", "5px")
-      // .style("padding", "5px")
-      .html(function(d) {
-        return (`${d.state}
+  var toolTip = d3.tip()
+    .attr("class", "tooltip")
+    .offset([80, -60])
+    .style("color", "black")
+    .style("background", "white")
+    .style("border", "solid")
+    .style("border-width", "1px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+    .html(function(d) {
+      return (`<strong>${d.state}</strong>
           <br>${xlabel} ${d[chosenX]}
           <br>${ylabel} ${d[chosenY]}`);
       });
@@ -162,55 +157,22 @@ function changeToolTip(chosenX, chosenY, circlesGroup, ) {
 // Import the CSV and then parse it so that the data is cast as numbers
   (async function(){
     var censusData = await d3.csv("assets/data/data.csv").catch(err => console.log(err))
-// d3.csv("assets/data/data.csv").then(function(data, err) {
-    console.log(censusData)
-//     if (err) throw err;
-  censusData.forEach(function(data) {
-    data.poverty = +data.poverty;
-    data.age = +data.age;
-    data.income = +data.income;
-    data.healthcare = +data.healthcare;
-    data.obesity = +data.obesity;
-    data.smokes = +data.smokes;
-  });
-  //   censusData.forEach(function(data) {
-  //     data.id = +data.id;
-  //     data.poverty = +data.poverty;
-  //     data.povertyMoe = +data.povertyMoe;
-  //     data.age = +data.age;
-  //     data.ageMoe = +data.ageMoe;
-  //     data.income = +data.income;
-  //     data.incomeMoe = +data.incomeMoe;
-  //     data.healthcare = +data.healthcare;
-  //     data.healthcareLow = +data.healthcareLow;
-  //     data.healthcareHigh = +data.healthcareHigh;
-  //     data.obesity = +data.obesity;
-  //     data.obesityLow = +data.obesityLow;
-  //     data.obesityHigh = +data.obesityHigh;
-  //     data.smokes = +data.smokes;
-  //     data.smokesLow = +data.smokesLow;
-  //     data.smokesHigh = +data.smokesHigh;
-  // });
+      console.log(censusData)
 
-    // data.forEach(d => {
-    //   d.poverty = +d.poverty;
-    //   d.age = +d.age;
-    //   d.income = +d.income;
-    //   d.healthcare = +d.healthcare;
-    //   d.obesity = +d.obesity;
-    //   d.smokes = +d.smokes;
-    // });
+    censusData.forEach(function(data) {
+      data.poverty = +data.poverty;
+      data.age = +data.age;
+      data.income = +data.income;
+      data.healthcare = +data.healthcare;
+      data.obesity = +data.obesity;
+      data.smokes = +data.smokes;
+  });
 
     // Create the scale and axes functions
     var xLinearScale = xScale(censusData, chosenX);
     var yLinearScale = yScale(censusData, chosenY);
     var bottomAxis = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
-
-    // var xLinearScale = xScale(data, chosenX);
-    // var yLinearScale = yScale(data, chosenY);
-    // var bottomAxis = d3.axisBottom(xLinearScale);
-    // var leftAxis = d3.axisLeft(yLinearScale);
 
     // Append the Axes
     var xAxis = chartGroup.append("g")
@@ -230,15 +192,9 @@ function changeToolTip(chosenX, chosenY, circlesGroup, ) {
       .append("circle")
       .attr("cx", d => xLinearScale(d[chosenX]))
       .attr("cy", d => yLinearScale(d[chosenY]))
-      .attr("r", 10)
+      .attr("r", 12)
       .attr("fill", "steelblue")
       .attr("opacity", ".5");
-
-    // var circles = circlesGroup.append("circle")
-    //   .attr("cx", d => xLinearScale(d[chosenX]))
-    //   .attr("cy", d => yLinearScale(d[chosenY]))
-    //   .attr("r", 10)
-      // .classed('stateCircle', true);
     
     // Append text inside the circles
     var circlesText = chartGroup.append("g")
@@ -249,13 +205,12 @@ function changeToolTip(chosenX, chosenY, circlesGroup, ) {
       .text(d => d.abbr)
       .attr("x", d => xLinearScale(d[chosenX]))
       .attr("y", d => yLinearScale(d[chosenY])+4)
-      .attr("font-family", "sans-serif")
+      .attr("font-family", "verdana")
       .attr("text-anchor", "middle")
       .attr("font-size", "10px")
       .style("fill", "black")
-      // .attr("font-weight", "bold");
-      // .classed('stateText', true);
-
+      .attr("font-weight", "bold");
+      
     // Create a group for the 3 labels on the x axis
     var xlabelsGroup = chartGroup.append("g")
       .attr("transform", `translate(${width / 2}, ${height + 30})`);
@@ -436,7 +391,3 @@ function changeToolTip(chosenX, chosenY, circlesGroup, ) {
         }
       });
   })()
-    
-  // }).catch(function(error) {
-  //   console.log(error);
-// });
