@@ -11,8 +11,8 @@ var margin = {
 };
 
 // Calcuate the height and width of the chart
-var width = svgWidth - margin.left - margin.right;
-var height = svgHeight - margin.top - margin.bottom;
+var width = svgWidth - margin.left - margin.right +20;
+var height = svgHeight - margin.top - margin.bottom -20;
 
 // Create SVG wrapper, append an SVG group that will hold the chart, and shift it by the left and top margins.
 var svg = d3.select("#scatter")
@@ -129,9 +129,10 @@ function changeToolTip(chosenX, chosenY, circlesGroup, ) {
   
   var toolTip = d3.tip()
     .attr("class", "tooltip")
-    .offset([80, -60])
+    .offset([40, 60])
+    // .offset([80, -60])
     .style("color", "black")
-    .style("background", "white")
+    .style("background", "steelblue")
     .style("border", "solid")
     .style("border-width", "1px")
     .style("border-radius", "5px")
@@ -213,25 +214,25 @@ function changeToolTip(chosenX, chosenY, circlesGroup, ) {
       
     // Create a group for the 3 labels on the x axis
     var xlabelsGroup = chartGroup.append("g")
-      .attr("transform", `translate(${width / 2}, ${height + 30})`);
+      .attr("transform", `translate(${width / 2}, ${height + 40})`);
 
     var povertyLabel = xlabelsGroup.append("text")
       .attr("x", 0)
-      .attr("y", 20)
+      .attr("y", 10)
       .attr("value", "poverty") // this value is grabbed for the event listener
       .text("In Poverty (%)")
       .classed("active", true);
 
     var ageLabel = xlabelsGroup.append("text")
       .attr("x", 0)
-      .attr("y", 40)
+      .attr("y", 30)
       .attr("value", "age") // this value is grabbed for the event listener
       .text("Age (Median)")
       .classed("inactive", true);
 
     var incomeLabel = xlabelsGroup.append("text")
       .attr("x", 0)
-      .attr("y", 60)
+      .attr("y", 50)
       .attr("value", "income") // this value is grabbed for the event listener
       .text("Household Income (Median)")
       .classed("inactive", true);

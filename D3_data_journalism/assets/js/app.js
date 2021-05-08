@@ -35,7 +35,7 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
 
        // Create the scale and axes functions
        var xLinearScale = d3.scaleLinear()
-       .domain([22, d3.max(censusData, d => d.poverty) *.20 ])
+       .domain([22, d3.max(censusData, d => d.poverty) * .20])
        .range([0, width]);
 
        var yLinearScale = d3.scaleLinear()
@@ -91,7 +91,7 @@ d3.csv("assets/data/data.csv").then(function(censusData) {
           .attr("class", "tooltip")
           .offset([80, -60])
           .style("color", "black")
-          .style("background", "white")
+          .style("background", "steelblue")
           .style("border", "solid")
           .style("border-width", "1px")
           .style("border-radius", "5px")
